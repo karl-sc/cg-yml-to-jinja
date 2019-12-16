@@ -65,6 +65,7 @@ def CleanBrackets(item):
     retval = retval.replace(" ","_")
     retval = retval.replace(".","_")
     retval = retval.replace("-","_")
+    retval = retval.replace("&","_") ##Added support for & character in YML files as JINJA doesnt support this. Thanks Richard Gallagher!
     return retval
 
 ### The function of code was modified from Ryder Bush's original YML to JINJA converter
