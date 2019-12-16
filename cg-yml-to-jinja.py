@@ -60,6 +60,11 @@ def CleanBrackets(item):
     retval = retval.replace(" }}","")
     retval = retval.replace("{{","")
     retval = retval.replace("}}","")
+    retval = retval.replace("sites v4.3.","")
+    retval = retval.replace("sites v4.3","")
+    retval = retval.replace(" ","_")
+    retval = retval.replace(".","_")
+    retval = retval.replace("-","_")
     return retval
 
 ### The function of code was modified from Ryder Bush's original YML to JINJA converter
@@ -84,7 +89,7 @@ def RecursivelyChangeVals(item, path = ""):
         else:
             csv_out_dict[CleanBrackets(path[1:])] = str(item)
         path = CleanBrackets(path)
-        return f"{{{{ {path[1:]} }}}}" 
+        return f"{{{{{path[1:]}}}}}" 
 
 def go():
     ####RENAME the SITES, and Elements in the YML with Generic Names
@@ -94,7 +99,7 @@ def go():
     site_counter = 0
     for site in list(yml_input["sites v4.3"]):
         site_counter += 1
-        new_site_name = "{{ site_" + str(site_counter) + " }}"
+        new_site_name = "{{site_" + str(site_counter) + "}}"
         yml_input['sites v4.3'][new_site_name] = yml_input['sites v4.3'][site] 
         del yml_input['sites v4.3'][site]
         csv_out_dict[CleanBrackets(new_site_name)] = site
@@ -103,7 +108,7 @@ def go():
         if (type(yml_input["sites v4.3"][new_site_name]['elements v2.2']) == dict): #Ensure that atleast one subelement exists within the site
             for element in list(yml_input["sites v4.3"][new_site_name]['elements v2.2']):   ###Iterate and do the elements within the site
                 element_counter += 1
-                new_element_name = "{{ " + CleanBrackets(new_site_name) + ".element_" + str(element_counter) + " }}"
+                new_element_name = "{{ " + CleanBrackets(new_site_name) + "_element_" + str(element_counter) + " }}"
                 yml_input["sites v4.3"][new_site_name]['elements v2.2'][new_element_name] = yml_input["sites v4.3"][new_site_name]['elements v2.2'][element]
                 del yml_input["sites v4.3"][new_site_name]['elements v2.2'][element]
                 csv_out_dict[CleanBrackets(new_element_name)] = element
