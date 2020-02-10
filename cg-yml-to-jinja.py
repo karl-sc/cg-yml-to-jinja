@@ -14,6 +14,8 @@ import sys
 import argparse
 
 
+sites_version = 'sites v4.4'
+elements_version = 'elements v2.3'
 csv_out_dict = {}
 CLIARGS = {}
 yml_input = {}
@@ -31,10 +33,10 @@ def open_files():
         except yaml.YAMLError as exc:
             sys.exit(exc)
 
-    if('sites v4.3' not in yml_dict.keys()):
-        sys.exit("ERROR: no sites (sites v4.3) found in YML input file")
+    if(sites_version not in yml_dict.keys()):
+        sys.exit("ERROR: no sites (" + sites_version + ") found in YML input file")
 
-    if len(yml_dict['sites v4.3']) > 1:
+    if len(yml_dict[sites_version]) > 1:
         print(" WARNING: more than 1 site found. It is recommended that a YML with only 1 site be used")
     return yml_dict
 
@@ -60,8 +62,8 @@ def CleanBrackets(item):
     retval = retval.replace(" }}","")
     retval = retval.replace("{{","")
     retval = retval.replace("}}","")
-    retval = retval.replace("sites v4.3.","")
-    retval = retval.replace("sites v4.3","")
+    retval = retval.replace(sites_version + ".","")
+    retval = retval.replace(sites_version,"")
     retval = retval.replace(" ","_")
     retval = retval.replace(".","_")
     retval = retval.replace("-","_")
@@ -98,20 +100,20 @@ def go():
     
     print(" Renaming SITE Keys")
     site_counter = 0
-    for site in list(yml_input["sites v4.3"]):
+    for site in list(yml_input[sites_version]):
         site_counter += 1
         new_site_name = "{{site_" + str(site_counter) + "}}"
-        yml_input['sites v4.3'][new_site_name] = yml_input['sites v4.3'][site] 
-        del yml_input['sites v4.3'][site]
+        yml_input[sites_version][new_site_name] = yml_input[sites_version][site] 
+        del yml_input[sites_version][site]
         csv_out_dict[CleanBrackets(new_site_name)] = site
         print(" Renamed site",site_counter,"from",site,"to",CleanBrackets(new_site_name))
         element_counter = 0
-        if (type(yml_input["sites v4.3"][new_site_name]['elements v2.2']) == dict): #Ensure that atleast one subelement exists within the site
-            for element in list(yml_input["sites v4.3"][new_site_name]['elements v2.2']):   ###Iterate and do the elements within the site
+        if (type(yml_input[sites_version][new_site_name][elements_version]) == dict): #Ensure that atleast one subelement exists within the site
+            for element in list(yml_input[sites_version][new_site_name][elements_version]):   ###Iterate and do the elements within the site
                 element_counter += 1
                 new_element_name = "{{ " + CleanBrackets(new_site_name) + "_element_" + str(element_counter) + " }}"
-                yml_input["sites v4.3"][new_site_name]['elements v2.2'][new_element_name] = yml_input["sites v4.3"][new_site_name]['elements v2.2'][element]
-                del yml_input["sites v4.3"][new_site_name]['elements v2.2'][element]
+                yml_input[sites_version][new_site_name][elements_version][new_element_name] = yml_input[sites_version][new_site_name][elements_version][element]
+                del yml_input[sites_version][new_site_name][elements_version][element]
                 csv_out_dict[CleanBrackets(new_element_name)] = element
 
     if(CLIARGS['ignore_nulls']):
