@@ -12,7 +12,7 @@ import sys
 import argparse
 
 
-sites_version = 'sites v4.4'
+sites_version = 'sites v4.5'
 elements_version = 'elements v2.3'
 csv_out_dict = {}
 CLIARGS = {}
